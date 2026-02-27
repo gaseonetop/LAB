@@ -1,4 +1,4 @@
-# IVM — ID-Networkers Vulnerable Marketplace
+# Lab Pentest Vulnerable Marketplace
 
 > **THIS APPLICATION IS INTENTIONALLY INSECURE.**
 > **For security training and penetration testing labs ONLY.**
