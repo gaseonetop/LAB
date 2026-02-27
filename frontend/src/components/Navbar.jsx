@@ -1,0 +1,77 @@
+import { Link, useNavigate } from 'react-router-dom';
+import { useAuth } from '../context/AuthContext';
+import { useTheme } from '../context/ThemeContext';
+import { useState } from 'react';
+
+export default function Navbar() {
+  const { user, logout } = useAuth();
+  const { theme, toggleTheme } = useTheme();
+  const navigate = useNavigate();
+  const [query, setQuery] = useState('');
+
+  const handleSearch = (e) => {
+    e.preventDefault();
+    if (query.trim()) navigate(`/search?q=${encodeURIComponent(query)}`);
+  };
+
+  return (
+    <nav className="navbar navbar-cyber">
+      <Link to="/" className="navbar-brand">
+        <span className="navbar-brand-text">Pentest Lab</span>
+      </Link>
+
+      <form className="navbar-search" onSubmit={handleSearch}>
+        <input
+          type="text"
+          placeholder=">_ search items..."
+          value={query}
+          onChange={(e) => setQuery(e.target.value)}
+        />
+        <button type="submit" className="btn btn-sm btn-primary">EXEC</button>
+      </form>
+
+      <ul className="navbar-links">
+        <li>
+          <button
+            className="theme-toggle"
+            onClick={toggleTheme}
+            title={theme === 'light' ? 'Switch to Dark Mode' : 'Switch to Light Mode'}
+          >
+            {theme === 'light' ? '🌙' : '☀️'}
+          </button>
+        </li>
+        <li><Link to="/">Marketplace</Link></li>
+        <li><Link to="/feedback">Feedback</Link></li>
+
+        {user ? (
+          <>
+            <li><Link to="/add-product">Sell Item</Link></li>
+            <li><Link to="/wallet">Wallet</Link></li>
+            <li><Link to="/orders">Orders</Link></li>
+            <li><Link to={`/profile/${user.id}`}>Profile</Link></li>
+
+            {user.role === 'admin' && (
+              <li><Link to="/admin" className="nav-admin">⚡ Admin</Link></li>
+            )}
+
+            <li>
+              <div className="navbar-user">
+                <div className="navbar-avatar">
+                  {user.username?.charAt(0).toUpperCase()}
+                </div>
+                <button onClick={() => { logout(); navigate('/login'); }}>
+                  Logout
+                </button>
+              </div>
+            </li>
+          </>
+        ) : (
+          <>
+            <li><Link to="/login">Login</Link></li>
+            <li><Link to="/register">Register</Link></li>
+          </>
+        )}
+      </ul>
+    </nav>
+  );
+}
